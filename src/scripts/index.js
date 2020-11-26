@@ -1,6 +1,5 @@
 import {AceSettings} from "./settings";
 import {themes} from "./ace-themes";
-import {PerformanceObserver as ResizeObserver} from "perf_hooks";
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
     const configElement = aceConfig.element;
