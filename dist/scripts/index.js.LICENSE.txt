@@ -1,6 +1,10 @@
+/*! ../../node_modules/ace-builds */
+
 /*! ./ace-themes */
 
 /*! ./settings */
+
+/*! CommonJS bailout: module.exports is used directly at 21334:24-38 */
 
 /*! export AceSettings [provided] [no usage info] [missing usage info prevents renaming] */
 
@@ -12,9 +16,13 @@
 
 /*! other exports [not provided] [no usage info] */
 
-/*! runtime requirements: __webpack_require__, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/*! runtime requirements: __webpack_require__, __webpack_require__.n, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
 
 /*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.d, __webpack_require__.* */
+
+/*! runtime requirements: module.loaded, module.id, module, __webpack_require__.nmd, __webpack_require__.amdD, __webpack_require__.*, __webpack_require__ */
+
+/*! unknown exports (runtime-defined) */
 
 /*!******************************!*\
   !*** ./src/scripts/index.js ***!
@@ -27,3 +35,7 @@
 /*!***********************************!*\
   !*** ./src/scripts/ace-themes.js ***!
   \***********************************/
+
+/*!*******************************************************!*\
+  !*** ./node_modules/ace-builds/src-noconflict/ace.js ***!
+  \*******************************************************/

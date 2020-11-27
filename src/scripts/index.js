@@ -1,5 +1,6 @@
 import {AceSettings} from "./settings";
 import {themes} from "./ace-themes";
+import * as acemodule from "../../node_modules/ace-builds";
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
     const configElement = aceConfig.element;
@@ -44,7 +45,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     let editor = ace.edit(`aceEditor-${aceConfig.object.id}`);
     editor.setOptions({
         mode: "ace/mode/javascript",
-        theme: theme,
+        theme: `ace/theme/${theme}`,
         fontSize: `${fontSize}pt`,
         showPrintMargin: false,
         foldStyle: "markbegin",
