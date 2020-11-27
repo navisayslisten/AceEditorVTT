@@ -43,7 +43,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     configElement.find('.command textarea[name="command"]').css("display", "none");
 
     // furnace compat
-    const furnace = configElement.find("div.furnace-macro-command");
+    let furnace = configElement.find("div.furnace-macro-command");
     if (furnace.length !== 0) {
         furnace.css("display", "none");
     }
@@ -71,6 +71,15 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     editor.setTheme("ace/theme/solarized_dark");
     editor.getSession().setUseWrapMode(game.settings.get("aevtt", "lineWrap"));
 
+    configElement.find('.command textarea[name="command"]').css("display", "");
+    configElement.find(".ace-editor").css("display", "none");
+
+    // furnace compat
+    if (furnace.length !== 0) {
+        furnace.css("display", "");
+        furnace.trigger("change");
+    }
+
     configElement.find(".ace-editor-button").on("click", (event) => {
         event.preventDefault();
         if (configElement.find(".ace-editor").css("display") === "none") {
@@ -80,7 +89,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
             editor.setValue(configElement.find('.command textarea[name="command"]').val(), -1);
 
             // furnace compat
-            const furnace = configElement.find("div.furnace-macro-command");
+            furnace = configElement.find("div.furnace-macro-command");
             if (furnace.length !== 0) {
                 furnace.css("display", "none");
             }
