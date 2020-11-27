@@ -1,12 +1,15 @@
 import {AceSettings} from "./settings";
 import {themes} from "./ace-themes";
-import * as acemodule from "../../node_modules/ace-builds";
+import * as acemodule from "ace-builds";
+require("ace-builds/webpack-resolver");
+ace.config.set("basePath", "./bundles")
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
     const configElement = aceConfig.element;
     const enabled = game.settings.get('aevtt', 'enabled');
     const fontSize = game.settings.get('aevtt', 'fontSize');
-    const theme = game.settings.get('aevtt', 'theme');
+    const themeName = game.settings.get('aevtt', 'theme');
+    let theme = '';
     const autoCompleteState = game.settings.get('aevtt', 'autoComplete');
 
     configElement
@@ -20,9 +23,11 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         return;
     }
 
-    if (!theme instanceof String || !themes.includes(theme)) {
+    if (!themeName instanceof String || !themes.includes(themeName)) {
         console.error(`Theme: '${theme}' does not exist.`);
         return;
+    } else {
+        theme = `ace/themes/${themeName}`;
     }
 
     if (!fontSize instanceof Number || fontSize <= 0) {
@@ -43,11 +48,9 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         .append('<button type="button" class="ace-editor-button" title="Toggle Ace Editor" name="editorButton"><i class="fas fa-terminal"></i></button>');
 
     let editor = ace.edit(`aceEditor-${aceConfig.object.id}`);
-    ace.config.set('basePath', './scripts/ace')
     editor.getSession().setUseWorker(false);
     editor.setOptions({
         mode: "ace/mode/javascript",
-        theme: `ace/theme/${theme}`,
         fontSize: `${fontSize}pt`,
         showPrintMargin: false,
         foldStyle: "markbegin",
@@ -55,7 +58,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         enableSnippets: autoCompleteState,
         enableLiveAutocompletion: autoCompleteState,
     });
-
+    editor.setTheme(theme);
     editor.getSession().setUseWrapMode(game.settings.get("aceeditor", "lineWrap"));
 
     configElement.find(".ace-editor-button").on("click", (event) => {
@@ -124,6 +127,6 @@ function createAceConfigHook(id, editor) {
 
 Hooks.on('init', function () {
     game.aevtt= {};
-    CONFIG.debug.aevtt = false;
+    CONFIG.debug.aevtt = true;
     AceSettings.init();
 })

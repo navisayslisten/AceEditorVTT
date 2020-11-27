@@ -3,7 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-    name: 'ace-editor-vtt',
+    name: 'aevtt',
     entry: {
         index: path.resolve(__dirname, 'src/scripts/index.js'),
     },

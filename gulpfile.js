@@ -6,12 +6,9 @@ const stringify = require('json-stringify-pretty-compact');
 const less = require('gulp-less');
 const git = require('gulp-git');
 const concat = require('gulp-concat');
-
 const argv = require('yargs').argv;
-
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
-
 const browserSync = require('browser-sync').create();
 
 
