@@ -22,15 +22,15 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         return;
     }
 
-    // Disable Ace if Furnace is also installed.
-    if (configElement.has(".furnace-macro-command")) {
+    // TODO: Figure out how to detect Furnace. For some reason this is true even if Furnace isn't installed. Weird.
+    /*if (configElement.has(".furnace-macro-command")) {
         const message = 'Ace Editor VTT is not compatible with Furnace. Disabling Ace in favor of Furnace.';
         ui.notifications.error(message);
         console.error(message)
         game.settings.set('AceEditorVTT', 'enabled', false)
             .then(r => console.info(`AEVTT now set to ${r}`));
         return;
-    }
+    }*/
 
 
     configElement
