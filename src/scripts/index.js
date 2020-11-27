@@ -4,16 +4,16 @@ const ace = require("ace-builds/src-min-noconflict/ace");
 require("ace-builds/webpack-resolver");
 require("ace-builds/src-min-noconflict/ext-language_tools");
 require("ace-builds/src-min-noconflict/ext-error_marker");
-ace.config.set("basePath", "modules/ace-editor-vtt/scripts/");
+ace.config.set("basePath", "modules/AceEditorVTT/scripts/");
 
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
-    const enabled = game.settings.get('aevtt', 'enabled');
-    const fontSize = game.settings.get('aevtt', 'fontSize');
-    // const themeName = game.settings.get('aevtt', 'theme');
+    const enabled = game.settings.get('AceEditorVTT', 'enabled');
+    const fontSize = game.settings.get('AceEditorVTT', 'fontSize');
+    // const themeName = game.settings.get('AceEditorVTT', 'theme');
     // let theme = '';
-    const autoComplete = game.settings.get('aevtt', 'autoComplete');
-    const errorCheck = game.settings.get('aevtt', 'errorCheck');
+    const autoComplete = game.settings.get('AceEditorVTT', 'autoComplete');
+    const errorCheck = game.settings.get('AceEditorVTT', 'errorCheck');
 
     const configElement = aceConfig.element;
 
@@ -28,7 +28,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         const message = 'Ace Editor VTT is not compatible with Furnace. Disabling Ace in favor of Furnace.';
         ui.notifications.error(message);
         console.error(message)
-        game.settings.set('aevtt', 'enabled', false)
+        game.settings.set('AceEditorVTT', 'enabled', false)
             .then(r => console.info(`AEVTT now set to ${r}`));
         return;
     }
@@ -72,7 +72,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         maxLines: 50,
     });
     editor.setTheme("ace/theme/solarized_dark");
-    editor.getSession().setUseWrapMode(game.settings.get("aevtt", "lineWrap"));
+    editor.getSession().setUseWrapMode(game.settings.get("AceEditorVTT", "lineWrap"));
 
     configElement.find(".ace-editor-button").on("click", (event) => {
         event.preventDefault();
@@ -124,8 +124,8 @@ function createMacroConfigHook(id, editor) {
     });
 }
 
-Hooks.on('init', function () {
-    game.aevtt= {};
-    CONFIG.debug.aevtt = true;
+Hooks.once('init', function () {
+    game.AceEditorVTT= {};
+    CONFIG.debug.AceEditorVTT = false;
     AceSettings.init();
 })

@@ -8,7 +8,7 @@ module.exports = {
     mode: 'development',
     devtool: 'source-map',
     output: {
-        publicPath: 'modules/ace-editor-vtt/scripts/',
+        publicPath: 'modules/AceEditorVTT/scripts/',
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist/scripts/'),
     },

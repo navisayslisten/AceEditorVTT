@@ -1,6 +1,6 @@
 export class AceSettings extends FormApplication {
     static init() {
-        game.settings.register('aevtt', 'enabled', {
+        game.settings.register('AceEditorVTT', 'enabled', {
             name: 'Enable Ace Editor for macros.',
             type: Boolean,
             hint:
@@ -10,7 +10,7 @@ export class AceSettings extends FormApplication {
             default: true,
         });
 
-        game.settings.register('aevtt', 'autoComplete', {
+        game.settings.register('AceEditorVTT', 'autoComplete', {
             name: 'Enable code autocomplete feature.',
             hint:
                 'Will allow auto-complete features for Javascript. Ctrl+Spacebar shortcut will activate it manually.',
@@ -20,7 +20,7 @@ export class AceSettings extends FormApplication {
             default: false,
         });
 
-        game.settings.register('aevtt', 'errorCheck', {
+        game.settings.register('AceEditorVTT', 'errorCheck', {
             name: 'Enable Javascript error checking.',
             hint:
                 'Errors will show up for chat macros too; these can be ignored. Or disable this feature.',
@@ -30,7 +30,7 @@ export class AceSettings extends FormApplication {
             default: false,
         });
 
-        game.settings.register('aevtt', 'fontSize', {
+        game.settings.register('AceEditorVTT', 'fontSize', {
             name: "Set the Ace Editor font size.",
             type: Number,
             scope: 'client',
@@ -40,7 +40,7 @@ export class AceSettings extends FormApplication {
 
         // TODO: Figure out how to make this work & a dropdown
 
-        // game.settings.register('aevtt', 'theme', {
+        // game.settings.register('AceEditorVTT', 'theme', {
         //     name: "Set your Ace Editor color/style theme.",
         //     type: String,
         //     hint:
@@ -51,7 +51,7 @@ export class AceSettings extends FormApplication {
         //     default: "solarized_dark",
         // });
 
-        game.settings.register('aevtt', 'lineWrap', {
+        game.settings.register('AceEditorVTT', 'lineWrap', {
             name: "Enable line wrap",
             type: Boolean,
             scope: "client",
@@ -60,15 +60,45 @@ export class AceSettings extends FormApplication {
         });
     }
 
+
+
+    static get defaultOptions() {
+        return {
+            ...super.defaultOptions,
+            height: 'auto',
+            title: 'AceEditorVTT',
+            width: 600,
+            classes: ['AceEditorVTT', 'settings'],
+            tabs: [
+                {
+                    navSelector: '.tabs',
+                    contentSelector: 'form',
+                    initial: 'name',
+                },
+            ],
+            submitOnClose: true,
+        };
+    }
+
+    constructor(object = {}, options) {
+        super(object, options);
+    }
+
     getSettingsData() {
         return {
-            'enabled': game.settings.get('aevtt', 'enabled'),
-            'autoComplete': game.settings.get('aevtt', 'autoComplete'),
-            'errorCheck': game.settings.get('aevtt', 'errorCheck'),
-            'fontSize': game.settings.get('aevtt', 'fontSize'),
-            // 'theme': game.settings.get('aevtt', 'theme'),
-            'lineWrap': game.settings.get('aevtt', 'lineWrap'),
+            'enabled': game.settings.get('AceEditorVTT', 'enabled'),
+            'autoComplete': game.settings.get('AceEditorVTT', 'autoComplete'),
+            'errorCheck': game.settings.get('AceEditorVTT', 'errorCheck'),
+            'fontSize': game.settings.get('AceEditorVTT', 'fontSize'),
+            // 'theme': game.settings.get('AceEditorVTT', 'theme'),
+            'lineWrap': game.settings.get('AceEditorVTT', 'lineWrap'),
         };
+    }
+
+    _getHeaderButtons() {
+        let btns = super._getHeaderButtons();
+        btns[0].label = 'Save & Close';
+        return btns;
     }
 
     getData(options={}) {
@@ -84,9 +114,9 @@ export class AceSettings extends FormApplication {
     _updateObject(ev, formData) {
         const data = expandObject(formData);
         for (let [key, value] of Object.entries(data)) {
-            game.settings.set('aevtt', key, value).then(() => {
-                console.debug(`${vtt} | Set Ace Editor setting: ${key} to ${value}`);
-            });
+            game.settings.set('AceEditorVTT', key, value).then(r =>
+                console.debug(`${vtt} | Set Ace Editor setting: ${key} to ${value}`)
+            );
         }
     }
 }

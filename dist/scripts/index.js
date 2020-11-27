@@ -5900,16 +5900,16 @@ const ace = __webpack_require__(/*! ace-builds/src-min-noconflict/ace */ "./node
 __webpack_require__(/*! ace-builds/webpack-resolver */ "./node_modules/ace-builds/webpack-resolver.js");
 __webpack_require__(/*! ace-builds/src-min-noconflict/ext-language_tools */ "./node_modules/ace-builds/src-min-noconflict/ext-language_tools.js");
 __webpack_require__(/*! ace-builds/src-min-noconflict/ext-error_marker */ "./node_modules/ace-builds/src-min-noconflict/ext-error_marker.js");
-ace.config.set("basePath", "modules/ace-editor-vtt/scripts/");
+ace.config.set("basePath", "modules/AceEditorVTT/scripts/");
 
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
-    const enabled = game.settings.get('aevtt', 'enabled');
-    const fontSize = game.settings.get('aevtt', 'fontSize');
-    // const themeName = game.settings.get('aevtt', 'theme');
+    const enabled = game.settings.get('AceEditorVTT', 'enabled');
+    const fontSize = game.settings.get('AceEditorVTT', 'fontSize');
+    // const themeName = game.settings.get('AceEditorVTT', 'theme');
     // let theme = '';
-    const autoComplete = game.settings.get('aevtt', 'autoComplete');
-    const errorCheck = game.settings.get('aevtt', 'errorCheck');
+    const autoComplete = game.settings.get('AceEditorVTT', 'autoComplete');
+    const errorCheck = game.settings.get('AceEditorVTT', 'errorCheck');
 
     const configElement = aceConfig.element;
 
@@ -5924,7 +5924,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         const message = 'Ace Editor VTT is not compatible with Furnace. Disabling Ace in favor of Furnace.';
         ui.notifications.error(message);
         console.error(message)
-        game.settings.set('aevtt', 'enabled', false)
+        game.settings.set('AceEditorVTT', 'enabled', false)
             .then(r => console.info(`AEVTT now set to ${r}`));
         return;
     }
@@ -5968,7 +5968,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         maxLines: 50,
     });
     editor.setTheme("ace/theme/solarized_dark");
-    editor.getSession().setUseWrapMode(game.settings.get("aevtt", "lineWrap"));
+    editor.getSession().setUseWrapMode(game.settings.get("AceEditorVTT", "lineWrap"));
 
     configElement.find(".ace-editor-button").on("click", (event) => {
         event.preventDefault();
@@ -6020,9 +6020,9 @@ function createMacroConfigHook(id, editor) {
     });
 }
 
-Hooks.on('init', function () {
-    game.aevtt= {};
-    CONFIG.debug.aevtt = true;
+Hooks.once('init', function () {
+    game.AceEditorVTT= {};
+    CONFIG.debug.AceEditorVTT = false;
     _settings__WEBPACK_IMPORTED_MODULE_0__.AceSettings.init();
 })
 
@@ -6045,7 +6045,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 class AceSettings extends FormApplication {
     static init() {
-        game.settings.register('aevtt', 'enabled', {
+        game.settings.register('AceEditorVTT', 'enabled', {
             name: 'Enable Ace Editor for macros.',
             type: Boolean,
             hint:
@@ -6055,7 +6055,7 @@ class AceSettings extends FormApplication {
             default: true,
         });
 
-        game.settings.register('aevtt', 'autoComplete', {
+        game.settings.register('AceEditorVTT', 'autoComplete', {
             name: 'Enable code autocomplete feature.',
             hint:
                 'Will allow auto-complete features for Javascript. Ctrl+Spacebar shortcut will activate it manually.',
@@ -6065,7 +6065,7 @@ class AceSettings extends FormApplication {
             default: false,
         });
 
-        game.settings.register('aevtt', 'errorCheck', {
+        game.settings.register('AceEditorVTT', 'errorCheck', {
             name: 'Enable Javascript error checking.',
             hint:
                 'Errors will show up for chat macros too; these can be ignored. Or disable this feature.',
@@ -6075,7 +6075,7 @@ class AceSettings extends FormApplication {
             default: false,
         });
 
-        game.settings.register('aevtt', 'fontSize', {
+        game.settings.register('AceEditorVTT', 'fontSize', {
             name: "Set the Ace Editor font size.",
             type: Number,
             scope: 'client',
@@ -6085,7 +6085,7 @@ class AceSettings extends FormApplication {
 
         // TODO: Figure out how to make this work & a dropdown
 
-        // game.settings.register('aevtt', 'theme', {
+        // game.settings.register('AceEditorVTT', 'theme', {
         //     name: "Set your Ace Editor color/style theme.",
         //     type: String,
         //     hint:
@@ -6096,7 +6096,7 @@ class AceSettings extends FormApplication {
         //     default: "solarized_dark",
         // });
 
-        game.settings.register('aevtt', 'lineWrap', {
+        game.settings.register('AceEditorVTT', 'lineWrap', {
             name: "Enable line wrap",
             type: Boolean,
             scope: "client",
@@ -6105,15 +6105,45 @@ class AceSettings extends FormApplication {
         });
     }
 
+
+
+    static get defaultOptions() {
+        return {
+            ...super.defaultOptions,
+            height: 'auto',
+            title: 'AceEditorVTT',
+            width: 600,
+            classes: ['AceEditorVTT', 'settings'],
+            tabs: [
+                {
+                    navSelector: '.tabs',
+                    contentSelector: 'form',
+                    initial: 'name',
+                },
+            ],
+            submitOnClose: true,
+        };
+    }
+
+    constructor(object = {}, options) {
+        super(object, options);
+    }
+
     getSettingsData() {
         return {
-            'enabled': game.settings.get('aevtt', 'enabled'),
-            'autoComplete': game.settings.get('aevtt', 'autoComplete'),
-            'errorCheck': game.settings.get('aevtt', 'errorCheck'),
-            'fontSize': game.settings.get('aevtt', 'fontSize'),
-            // 'theme': game.settings.get('aevtt', 'theme'),
-            'lineWrap': game.settings.get('aevtt', 'lineWrap'),
+            'enabled': game.settings.get('AceEditorVTT', 'enabled'),
+            'autoComplete': game.settings.get('AceEditorVTT', 'autoComplete'),
+            'errorCheck': game.settings.get('AceEditorVTT', 'errorCheck'),
+            'fontSize': game.settings.get('AceEditorVTT', 'fontSize'),
+            // 'theme': game.settings.get('AceEditorVTT', 'theme'),
+            'lineWrap': game.settings.get('AceEditorVTT', 'lineWrap'),
         };
+    }
+
+    _getHeaderButtons() {
+        let btns = super._getHeaderButtons();
+        btns[0].label = 'Save & Close';
+        return btns;
     }
 
     getData(options={}) {
@@ -6129,9 +6159,9 @@ class AceSettings extends FormApplication {
     _updateObject(ev, formData) {
         const data = expandObject(formData);
         for (let [key, value] of Object.entries(data)) {
-            game.settings.set('aevtt', key, value).then(() => {
-                console.debug(`${vtt} | Set Ace Editor setting: ${key} to ${value}`);
-            });
+            game.settings.set('AceEditorVTT', key, value).then(r =>
+                console.debug(`${vtt} | Set Ace Editor setting: ${key} to ${value}`)
+            );
         }
     }
 }
@@ -6213,7 +6243,7 @@ class AceSettings extends FormApplication {
 /******/ 	
 /******/ 	/* webpack/runtime/publicPath */
 /******/ 	(() => {
-/******/ 		__webpack_require__.p = "modules/ace-editor-vtt/scripts/";
+/******/ 		__webpack_require__.p = "modules/AceEditorVTT/scripts/";
 /******/ 	})();
 /******/ 	
 /************************************************************************/
