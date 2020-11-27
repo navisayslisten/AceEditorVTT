@@ -5919,8 +5919,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     }
 
     // Disable Ace if Furnace is also installed.
-    const furnace = configElement.getElementsByClassName("furnace-macro-command");
-    if (furnace.length > 0) {
+    if (configElement.has(".furnace-macro-command")) {
         const message = 'Ace Editor VTT is not compatible with Furnace. Disabling Ace in favor of Furnace.';
         ui.notifications.error(message);
         console.error(message)
