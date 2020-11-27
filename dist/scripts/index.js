@@ -5904,7 +5904,6 @@ ace.config.set("basePath", "modules/ace-editor-vtt/scripts/");
 
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
-    const configElement = aceConfig.element;
     const enabled = game.settings.get('aevtt', 'enabled');
     const fontSize = game.settings.get('aevtt', 'fontSize');
     // const themeName = game.settings.get('aevtt', 'theme');
@@ -5912,16 +5911,30 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     const autoComplete = game.settings.get('aevtt', 'autoComplete');
     const errorCheck = game.settings.get('aevtt', 'errorCheck');
 
-    configElement
-        .find(".sheet-footer")
-        .append(
-            `<div class="ace-editor" id="aceEditor-${aceConfig.object.id}"></div>`
-        );
+    const configElement = aceConfig.element;
 
     if (!enabled) {
         configElement.find(".ace-editor").css("display", "none");
         return;
     }
+
+    // Disable Ace if Furnace is also installed.
+    const furnace = configElement.find("div.furnace-macro-command");
+    if (furnace) {
+        const message = 'Ace Editor VTT is not compatible with Furnace. Disabling Ace in favor of Furnace.';
+        ui.notifications.error(message);
+        console.error(message)
+        game.settings.set('aevtt', 'enabled', false)
+            .then(r => console.info(`AEVTT now set to ${r}`));
+        return;
+    }
+
+
+    configElement
+        .find("div.form-group.stacked.command")
+        .append(
+            `<div class="ace-editor" id="aceEditor-${aceConfig.object.id}"></div>`
+        );
 
     // TODO: Figure out how to allow selecting themes
     // if (!themeName instanceof String || !themes.includes(themeName)) {
@@ -5936,17 +5949,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         return;
     }
 
-    configElement.find('.command textarea[name="command"]').css("display", "none");
-
-    // furnace compat
-    let furnace = configElement.find("div.furnace-macro-command");
-    if (furnace.length !== 0) {
-        furnace.css("display", "none");
-    }
-
-    // shift the editor div to the right location now.
-    document.getElementsByClassName("command")[0].appendChild(document.getElementsByClassName("ace-editor")[0]);
-
+    configElement.find('.command textarea[name="command"]').css("display", "");
     configElement
         .find(".sheet-footer")
         .append('<button type="button" class="ace-editor-button" title="Toggle Ace Editor" name="editorButton"><i class="fas fa-terminal"></i></button>');
@@ -5967,42 +5970,20 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     editor.setTheme("ace/theme/solarized_dark");
     editor.getSession().setUseWrapMode(game.settings.get("aevtt", "lineWrap"));
 
-    configElement.find('.command textarea[name="command"]').css("display", "");
-    configElement.find(".ace-editor").css("display", "none");
-
-    // furnace compat
-    if (furnace.length !== 0) {
-        furnace.css("display", "");
-        furnace.trigger("change");
-    }
-
     configElement.find(".ace-editor-button").on("click", (event) => {
         event.preventDefault();
         if (configElement.find(".ace-editor").css("display") === "none") {
             configElement.find('.command textarea[name="command"]').css("display", "none");
             configElement.find(".ace-editor").css("display", "");
-            configElement.find(".ace-editor-expand").css("display", "");
             editor.setValue(configElement.find('.command textarea[name="command"]').val(), -1);
-
-            // furnace compat
-            furnace = configElement.find("div.furnace-macro-command");
-            if (furnace.length !== 0) {
-                furnace.css("display", "none");
-            }
         } else {
             configElement.find('.command textarea[name="command"]').css("display", "");
             configElement.find(".ace-editor").css("display", "none");
-
-            // furnace compat
-            const furnace = configElement.find("div.furnace-macro-command");
-            if (furnace.length !== 0) {
-                furnace.css("display", "");
-                furnace.trigger("change");
-            }
         }
     });
 
-    editor.setValue(configElement.find('textarea[name="command"]').val(), -1);
+    configElement.find('.command textarea[name="command"]').css("display", "");
+    configElement.find(".ace-editor").css("display", "none");
 
     editor.getSession().on("change", () => {
         configElement.find('textarea[name="command"]').val(editor.getSession().getValue());
@@ -6023,18 +6004,18 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     // watch for resizing of editor
     new ResizeObserver(() => {
         editor.resize();
-        editor.renderer.updateFull();
+        editor.renderer.updateFull(true);
     }).observe(editor.container);
 
-    createAceConfigHook(aceConfig.id, editor);
+    createMacroConfigHook(aceConfig.id, editor);
 });
 
-function createAceConfigHook(id, editor) {
-    Hooks.once("closeAceConfig", function (aceConfig) {
+function createMacroConfigHook(id, editor) {
+    Hooks.once("closeMacroConfig", function (aceConfig) {
         if (id === aceConfig.id) {
             editor.destroy();
         } else {
-            createAceConfigHook(id, editor);
+            createMacroConfigHook(id, editor);
         }
     });
 }
