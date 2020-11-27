@@ -14,7 +14,7 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     const autoCompleteState = game.settings.get('aevtt', 'autoComplete');
 
     configElement
-        .find(".command")
+        .find(".sheet-footer")
         .append(
             `<div class="ace-editor" id="aceEditor-${aceConfig.object.id}"></div>`
         );
@@ -43,6 +43,9 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
     if (furnace.length !== 0) {
         furnace.css("display", "none");
     }
+
+    // shift the editor div to the right location now.
+    document.getElementsByClassName("command")[0].appendChild(document.getElementsByClassName("ace-editor")[0]);
 
     configElement
         .find(".sheet-footer")
