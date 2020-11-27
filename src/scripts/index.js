@@ -43,6 +43,8 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         .append('<button type="button" class="ace-editor-button" title="Toggle Ace Editor" name="editorButton"><i class="fas fa-terminal"></i></button>');
 
     let editor = ace.edit(`aceEditor-${aceConfig.object.id}`);
+    ace.config.set('basePath', './scripts/ace')
+    editor.getSession().setUseWorker(false);
     editor.setOptions({
         mode: "ace/mode/javascript",
         theme: `ace/theme/${theme}`,
