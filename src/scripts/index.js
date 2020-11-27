@@ -1,8 +1,9 @@
 import {AceSettings} from "./settings";
 import {themes} from "./ace-themes";
-require("ace-builds/webpack-resolver");
 const ace = require("ace-builds/src-min-noconflict/ace");
 ace.config.set("basePath", "modules/ace-editor-vtt/scripts/")
+require("ace-builds/webpack-resolver");
+
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
     const configElement = aceConfig.element;
