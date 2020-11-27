@@ -1,16 +1,16 @@
 import {AceSettings} from "./settings";
-import {themes} from "./ace-themes";
+// import {themes} from "./ace-themes";
 const ace = require("ace-builds/src-min-noconflict/ace");
-ace.config.set("basePath", "modules/ace-editor-vtt/scripts/")
 require("ace-builds/webpack-resolver");
+ace.config.set("basePath", "modules/ace-editor-vtt/scripts/")
 
 
 Hooks.on("renderMacroConfig", function (aceConfig) {
     const configElement = aceConfig.element;
     const enabled = game.settings.get('aevtt', 'enabled');
     const fontSize = game.settings.get('aevtt', 'fontSize');
-    const themeName = game.settings.get('aevtt', 'theme');
-    let theme = '';
+    // const themeName = game.settings.get('aevtt', 'theme');
+    // let theme = '';
     const autoCompleteState = game.settings.get('aevtt', 'autoComplete');
 
     configElement
@@ -24,12 +24,12 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         return;
     }
 
-    if (!themeName instanceof String || !themes.includes(themeName)) {
-        console.error(`Theme: '${theme}' does not exist.`);
-        return;
-    } else {
-        theme = `ace/themes/${themeName}`;
-    }
+    // if (!themeName instanceof String || !themes.includes(themeName)) {
+    //     console.error(`Theme: '${theme}' does not exist.`);
+    //     return;
+    // } else {
+    //     theme = `ace/themes/${themeName}`;
+    // }
 
     if (!fontSize instanceof Number || fontSize <= 0) {
         console.error(`Invalid fontSize: ${fontSize}`);
@@ -59,8 +59,8 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         enableSnippets: autoCompleteState,
         enableLiveAutocompletion: autoCompleteState,
     });
-    editor.setTheme(theme);
-    editor.getSession().setUseWrapMode(game.settings.get("aceeditor", "lineWrap"));
+    editor.setTheme("ace/themes/solarized_dark");
+    editor.getSession().setUseWrapMode(game.settings.get("aevtt", "lineWrap"));
 
     configElement.find(".ace-editor-button").on("click", (event) => {
         event.preventDefault();
@@ -78,7 +78,6 @@ Hooks.on("renderMacroConfig", function (aceConfig) {
         } else {
             configElement.find('.command textarea[name="command"]').css("display", "");
             configElement.find(".ace-editor").css("display", "none");
-            configElement.find(".ace-editor-expand").css("display", "none");
 
             // furnace compat
             const furnace = configElement.find("div.furnace-macro-command");

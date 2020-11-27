@@ -9,7 +9,7 @@ module.exports = {
             import: path.resolve(__dirname, 'src/scripts/index.js'), filename: 'index.js'
         },
         ace: {
-            import: ['ace-builds'], filename: 'ace.js'
+            import: ['ace-builds/src-min-noconflict/ace'], filename: 'ace.js'
         }
     },
     mode: 'development',
@@ -18,9 +18,6 @@ module.exports = {
         publicPath: 'modules/ace-editor-vtt/scripts/',
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist/scripts/'),
-    },
-    optimization: {
-        minimize: true,
     },
     plugins: [new CleanWebpackPlugin()],
 };

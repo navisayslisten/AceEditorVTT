@@ -1,1 +1,238 @@
-ace.define("ace/ext/code_lens",["require","exports","module","ace/line_widgets","ace/lib/event","ace/lib/lang","ace/lib/dom","ace/editor","ace/config"],(function(e,n,o){"use strict";var t=e("../line_widgets").LineWidgets,r=e("../lib/event"),i=e("../lib/lang"),s=e("../lib/dom");function a(e,n){if(e&n.CHANGE_LINES||e&n.CHANGE_FULL||e&n.CHANGE_SCROLL||e&n.CHANGE_TEXT){var o=n.session,t=n.session.lineWidgets,r=n.$textLayer,i=r.$lenses;if(t){var a=n.$textLayer.$lines.cells,d=n.layerConfig,c=n.$padding;i||(i=r.$lenses=[]);for(var l=0,u=0;u<a.length;u++){var f=a[u].row,g=t[f],v=g&&g.lenses;if(v&&v.length){var L=i[l];L||(L=i[l]=s.buildDom(["div",{class:"ace_codeLens"}],n.container)),L.style.height=d.lineHeight+"px",l++;for(var p=0;p<v.length;p++){var h=L.childNodes[2*p];h||(0!=p&&L.appendChild(s.createTextNode(" | ")),h=s.buildDom(["a"],L)),h.textContent=v[p].title,h.lensCommand=v[p]}for(;L.childNodes.length>2*p-1;)L.lastChild.remove();var m=n.$cursorLayer.getPixelPosition({row:f,column:0},!0).top-d.lineHeight*g.rowsAbove-d.offset;L.style.top=m+"px";var $=n.gutterWidth,C=o.getLine(f).search(/\S|$/);-1==C&&(C=0),$+=C*d.characterWidth,$-=n.scrollLeft,L.style.paddingLeft=c+$+"px"}}for(;l<i.length;)i.pop().remove()}else i&&function(e){var n=e.$textLayer,o=n.$lenses;o&&o.forEach((function(e){e.remove()})),n.$lenses=null}(n)}}n.setLenses=function(e,n){var o=Number.MAX_VALUE;!function(e){if(e.lineWidgets){var n=e.widgetManager;e.lineWidgets.forEach((function(e){e&&e.lenses&&n.removeLineWidget(e)}))}}(e),n&&n.forEach((function(n){var t=n.start.row,r=n.start.column,i=e.lineWidgets&&e.lineWidgets[t];i&&i.lenses||(i=e.widgetManager.$registerLineWidget({rowCount:1,rowsAbove:1,row:t,column:r,lenses:[]})),i.lenses.push(n.command),t<o&&(o=t)})),e._emit("changeFold",{data:{start:{row:o}}})},n.registerCodeLensProvider=function(e,n){e.setOption("enableCodeLens",!0),e.codeLensProviders.push(n),e.$updateLensesOnInput()},n.clear=function(e){n.setLenses(e,null)};var d=e("../editor").Editor;e("../config").defineOptions(d.prototype,"editor",{enableCodeLens:{set:function(e){var o;e?function(e){e.codeLensProviders=[],e.renderer.on("afterRender",a),e.$codeLensClickHandler||(e.$codeLensClickHandler=function(n){var o=n.target.lensCommand;o&&e.execCommand(o.id,o.arguments)},r.addListener(e.container,"click",e.$codeLensClickHandler,e)),e.$updateLenses=function(){var o=e.session;if(o){o.widgetManager||(o.widgetManager=new t(o),o.widgetManager.attach(e));var r=e.codeLensProviders.length,i=[];e.codeLensProviders.forEach((function(t){t.provideCodeLenses(o,(function(t,s){t||(s.forEach((function(e){i.push(e)})),0==--r&&function(){var t=o.selection.cursor,r=o.documentToScreenRow(t);n.setLenses(o,i);var s=o.$undoManager&&o.$undoManager.$lastDelta;if(!(s&&"remove"==s.action&&s.lines.length>1)){var a=o.documentToScreenRow(t),d=e.renderer.layerConfig.lineHeight,c=o.getScrollTop()+(a-r)*d;o.setScrollTop(c)}}())}))}))}};var o=i.delayedCall(e.$updateLenses);e.$updateLensesOnInput=function(){o.delay(250)},e.on("input",e.$updateLensesOnInput)}(this):((o=this).off("input",o.$updateLensesOnInput),o.renderer.off("afterRender",a),o.$codeLensClickHandler&&o.container.removeEventListener("click",o.$codeLensClickHandler))}}}),s.importCssString(".ace_codeLens {    position: absolute;    color: #aaa;    font-size: 88%;    background: inherit;    width: 100%;    display: flex;    align-items: flex-end;    pointer-events: none;}.ace_codeLens > a {    cursor: pointer;    pointer-events: auto;}.ace_codeLens > a:hover {    color: #0000ff;    text-decoration: underline;}.ace_dark > .ace_codeLens > a:hover {    color: #4e94ce;}","")})),ace.require(["ace/ext/code_lens"],(function(e){"object"==typeof module&&"object"==typeof exports&&module&&(module.exports=e)}));
+ace.define("ace/ext/code_lens",["require","exports","module","ace/line_widgets","ace/lib/event","ace/lib/lang","ace/lib/dom","ace/editor","ace/config"], function(require, exports, module) {
+"use strict";
+var LineWidgets = require("../line_widgets").LineWidgets;
+var event = require("../lib/event");
+var lang = require("../lib/lang");
+var dom = require("../lib/dom");
+
+function clearLensElements(renderer) {
+    var textLayer = renderer.$textLayer;
+    var lensElements = textLayer.$lenses;
+    if (lensElements)
+        lensElements.forEach(function(el) {el.remove(); });
+    textLayer.$lenses = null;
+}
+
+function renderWidgets(changes, renderer) {
+    var changed = changes & renderer.CHANGE_LINES
+        || changes & renderer.CHANGE_FULL
+        || changes & renderer.CHANGE_SCROLL
+        || changes & renderer.CHANGE_TEXT;
+    if (!changed)
+        return;
+
+    var session = renderer.session;
+    var lineWidgets = renderer.session.lineWidgets;
+    var textLayer = renderer.$textLayer;
+    var lensElements = textLayer.$lenses;
+    if (!lineWidgets) {
+        if (lensElements)
+            clearLensElements(renderer);
+        return;
+    }
+
+    var textCells = renderer.$textLayer.$lines.cells;
+    var config = renderer.layerConfig;
+    var padding = renderer.$padding;
+
+    if (!lensElements)
+        lensElements = textLayer.$lenses = [];
+
+
+    var index = 0;
+    for (var i = 0; i < textCells.length; i++) {
+        var row = textCells[i].row;
+        var widget = lineWidgets[row];
+        var lenses = widget && widget.lenses;
+
+        if (!lenses || !lenses.length) continue;
+
+        var lensContainer = lensElements[index];
+        if (!lensContainer) {
+            lensContainer = lensElements[index]
+                = dom.buildDom(["div", {class: "ace_codeLens"}], renderer.container);
+        }
+        lensContainer.style.height = config.lineHeight + "px";
+        index++;
+
+        for (var j = 0; j < lenses.length; j++) {
+            var el = lensContainer.childNodes[2 * j];
+            if (!el) {
+                if (j != 0) lensContainer.appendChild(dom.createTextNode("\xa0|\xa0"));
+                el = dom.buildDom(["a"], lensContainer);
+            }
+            el.textContent = lenses[j].title;
+            el.lensCommand = lenses[j];
+        }
+        while (lensContainer.childNodes.length > 2 * j - 1)
+            lensContainer.lastChild.remove();
+
+        var top = renderer.$cursorLayer.getPixelPosition({
+            row: row,
+            column: 0
+        }, true).top - config.lineHeight * widget.rowsAbove - config.offset;
+        lensContainer.style.top = top + "px";
+
+        var left = renderer.gutterWidth;
+        var indent = session.getLine(row).search(/\S|$/);
+        if (indent == -1)
+            indent = 0;
+        left += indent * config.characterWidth;
+        left -= renderer.scrollLeft;
+        lensContainer.style.paddingLeft = padding + left + "px";
+    }
+    while (index < lensElements.length)
+        lensElements.pop().remove();
+}
+
+function clearCodeLensWidgets(session) {
+    if (!session.lineWidgets) return;
+    var widgetManager = session.widgetManager;
+    session.lineWidgets.forEach(function(widget) {
+        if (widget && widget.lenses)
+            widgetManager.removeLineWidget(widget);
+    });
+}
+
+exports.setLenses = function(session, lenses) {
+    var firstRow = Number.MAX_VALUE;
+
+    clearCodeLensWidgets(session);
+    lenses && lenses.forEach(function(lens) {
+        var row = lens.start.row;
+        var column = lens.start.column;
+        var widget = session.lineWidgets && session.lineWidgets[row];
+        if (!widget || !widget.lenses) {
+            widget = session.widgetManager.$registerLineWidget({
+                rowCount: 1,
+                rowsAbove: 1,
+                row: row,
+                column: column,
+                lenses: []
+            });
+        }
+        widget.lenses.push(lens.command);
+        if (row < firstRow)
+            firstRow = row;
+    });
+    session._emit("changeFold", {data: {start: {row: firstRow}}});
+};
+
+function attachToEditor(editor) {
+    editor.codeLensProviders = [];
+    editor.renderer.on("afterRender", renderWidgets);
+    if (!editor.$codeLensClickHandler) {
+        editor.$codeLensClickHandler = function(e) {
+            var command = e.target.lensCommand;
+            if (command)
+                editor.execCommand(command.id, command.arguments);
+        };
+        event.addListener(editor.container, "click", editor.$codeLensClickHandler, editor);
+    }
+    editor.$updateLenses = function() {
+        var session = editor.session;
+        if (!session) return;
+
+        if (!session.widgetManager) {
+            session.widgetManager = new LineWidgets(session);
+            session.widgetManager.attach(editor);
+        }
+
+        var providersToWaitNum = editor.codeLensProviders.length;
+        var lenses = [];
+        editor.codeLensProviders.forEach(function(provider) {
+            provider.provideCodeLenses(session, function(err, payload) {
+                if (err) return;
+                payload.forEach(function(lens) {
+                    lenses.push(lens);
+                });
+                providersToWaitNum--;
+                if (providersToWaitNum == 0) {
+                    applyLenses();
+                }
+            });
+        });
+
+        function applyLenses() {
+            var cursor = session.selection.cursor;
+            var oldRow = session.documentToScreenRow(cursor);
+            exports.setLenses(session, lenses);
+
+            var lastDelta = session.$undoManager && session.$undoManager.$lastDelta;
+            if (lastDelta && lastDelta.action == "remove" && lastDelta.lines.length > 1)
+                return;
+            var row = session.documentToScreenRow(cursor);
+            var lineHeight = editor.renderer.layerConfig.lineHeight;
+            var top = session.getScrollTop() + (row - oldRow) * lineHeight;
+            session.setScrollTop(top);
+        }
+    };
+    var updateLenses = lang.delayedCall(editor.$updateLenses);
+    editor.$updateLensesOnInput = function() {
+        updateLenses.delay(250);
+    };
+    editor.on("input", editor.$updateLensesOnInput);
+}
+
+function detachFromEditor(editor) {
+    editor.off("input", editor.$updateLensesOnInput);
+    editor.renderer.off("afterRender", renderWidgets);
+    if (editor.$codeLensClickHandler)
+        editor.container.removeEventListener("click", editor.$codeLensClickHandler);
+}
+
+exports.registerCodeLensProvider = function(editor, codeLensProvider) {
+    editor.setOption("enableCodeLens", true);
+    editor.codeLensProviders.push(codeLensProvider);
+    editor.$updateLensesOnInput();
+};
+
+exports.clear = function(session) {
+    exports.setLenses(session, null);
+};
+
+var Editor = require("../editor").Editor;
+require("../config").defineOptions(Editor.prototype, "editor", {
+    enableCodeLens: {
+        set: function(val) {
+            if (val) {
+                attachToEditor(this);
+            } else {
+                detachFromEditor(this);
+            }
+        }
+    }
+});
+
+dom.importCssString("\
+.ace_codeLens {\
+    position: absolute;\
+    color: #aaa;\
+    font-size: 88%;\
+    background: inherit;\
+    width: 100%;\
+    display: flex;\
+    align-items: flex-end;\
+    pointer-events: none;\
+}\
+.ace_codeLens > a {\
+    cursor: pointer;\
+    pointer-events: auto;\
+}\
+.ace_codeLens > a:hover {\
+    color: #0000ff;\
+    text-decoration: underline;\
+}\
+.ace_dark > .ace_codeLens > a:hover {\
+    color: #4e94ce;\
+}\
+", "");
+
+});                (function() {
+                    ace.require(["ace/ext/code_lens"], function(m) {
+                        if (typeof module == "object" && typeof exports == "object" && module) {
+                            module.exports = m;
+                        }
+                    });
+                })();
+            

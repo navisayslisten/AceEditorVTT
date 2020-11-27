@@ -26,16 +26,18 @@ export class AceSettings extends FormApplication {
             default: 12,
         });
 
-        game.settings.register('aevtt', 'theme', {
-            name: "Set your Ace Editor color/style theme.",
-            type: String,
-            hint:
-                'Themes can be found at https://github.com/ajaxorg/ace/tree/master/lib/ace/theme. ' +
-                'Default is solarized_dark',
-            scope: 'client',
-            config: true,
-            default: "solarized_dark",
-        });
+        // TODO: Figure out how to import submodules and themes to make this an option
+
+        // game.settings.register('aevtt', 'theme', {
+        //     name: "Set your Ace Editor color/style theme.",
+        //     type: String,
+        //     hint:
+        //         'Themes can be found at https://github.com/ajaxorg/ace/tree/master/lib/ace/theme. ' +
+        //         'Default is solarized_dark',
+        //     scope: 'client',
+        //     config: true,
+        //     default: "solarized_dark",
+        // });
 
         game.settings.register('aevtt', 'lineWrap', {
             name: "Enable line wrap",
@@ -51,7 +53,7 @@ export class AceSettings extends FormApplication {
             'enabled': game.settings.get('aevtt', 'enabled'),
             'autoComplete': game.settings.get('aevtt', 'autoComplete'),
             'fontSize': game.settings.get('aevtt', 'fontSize'),
-            'theme': game.settings.get('aevtt', 'theme'),
+            // 'theme': game.settings.get('aevtt', 'theme'),
             'lineWrap': game.settings.get('aevtt', 'lineWrap'),
         };
     }

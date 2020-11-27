@@ -1,9 +1,0 @@
-/*! CommonJS bailout: module.exports is used directly at 21334:24-38 */
-
-/*! runtime requirements: module.loaded, module.id, module, __webpack_require__.nmd, __webpack_require__.amdD, __webpack_require__.*, __webpack_require__ */
-
-/*! unknown exports (runtime-defined) */
-
-/*!*******************************************************!*\
-  !*** ./node_modules/ace-builds/src-noconflict/ace.js ***!
-  \*******************************************************/
