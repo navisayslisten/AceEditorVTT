@@ -2,11 +2,11 @@
 
 /*! ./settings */
 
+/*! CommonJS bailout: module.exports is used directly at 13:24-38 */
+
 /*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 
-/*! CommonJS bailout: module.exports is used directly at 21334:24-38 */
-
-/*! ace-builds */
+/*! ace-builds/src-min-noconflict/ace */
 
 /*! ace-builds/webpack-resolver */
 
@@ -850,7 +850,7 @@
 
 /*! runtime requirements: __webpack_require__ */
 
-/*! runtime requirements: __webpack_require__, __webpack_require__.n, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
+/*! runtime requirements: __webpack_require__, __webpack_require__.r, __webpack_exports__, __webpack_require__.* */
 
 /*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.d, __webpack_require__.* */
 
@@ -876,9 +876,9 @@
   !*** ./node_modules/ace-builds/webpack-resolver.js ***!
   \*****************************************************/
 
-/*!*******************************************************!*\
-  !*** ./node_modules/ace-builds/src-noconflict/ace.js ***!
-  \*******************************************************/
+/*!***********************************************************!*\
+  !*** ./node_modules/ace-builds/src-min-noconflict/ace.js ***!
+  \***********************************************************/
 
 /*!****************************************************************************************************************!*\
   !*** ./node_modules/file-loader/dist/cjs.js?esModule=false!./node_modules/ace-builds/src-noconflict/mode-d.js ***!
