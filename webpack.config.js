@@ -10,6 +10,9 @@ module.exports = {
         },
         ace: {
             import: ['ace-builds/src-min-noconflict/ace'], filename: 'ace.js'
+        },
+        theme: {
+            import: ['ace-builds/src-min-noconflict/theme-solarized_dark.js'], filename: 'theme-solarized_dark.js'
         }
     },
     mode: 'development',
