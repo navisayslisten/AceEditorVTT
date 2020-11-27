@@ -1,6 +1,6 @@
 {
 	"name": "ace-editor-vtt",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Foundry VTT module to replace macro editor with Ace Editor for Javascript.",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
