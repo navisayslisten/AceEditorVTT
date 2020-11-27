@@ -4,7 +4,7 @@ export class AceSettings extends FormApplication {
             name: 'Enable Ace Editor for macros.',
             type: Boolean,
             hint:
-                'If disabled you will see the default macro editor.',
+                'If disabled you will only see the default macro editor.',
             scope: 'client',
             config: true,
             default: true,
@@ -12,10 +12,22 @@ export class AceSettings extends FormApplication {
 
         game.settings.register('aevtt', 'autoComplete', {
             name: 'Enable code autocomplete feature.',
+            hint:
+                'Will allow auto-complete features for Javascript. Ctrl+Spacebar shortcut will activate it manually.',
             type: Boolean,
             scope: 'client',
             config: true,
-            default: true,
+            default: false,
+        });
+
+        game.settings.register('aevtt', 'errorCheck', {
+            name: 'Enable Javascript error checking.',
+            hint:
+                'Errors will show up for chat macros too; these can be ignored. Or disable this feature.',
+            type: Boolean,
+            scope: 'client',
+            config: true,
+            default: false,
         });
 
         game.settings.register('aevtt', 'fontSize', {
@@ -23,10 +35,10 @@ export class AceSettings extends FormApplication {
             type: Number,
             scope: 'client',
             config: true,
-            default: 12,
+            default: 11,
         });
 
-        // TODO: Figure out how to import submodules and themes to make this an option
+        // TODO: Figure out how to make this work & a dropdown
 
         // game.settings.register('aevtt', 'theme', {
         //     name: "Set your Ace Editor color/style theme.",
@@ -52,6 +64,7 @@ export class AceSettings extends FormApplication {
         return {
             'enabled': game.settings.get('aevtt', 'enabled'),
             'autoComplete': game.settings.get('aevtt', 'autoComplete'),
+            'errorCheck': game.settings.get('aevtt', 'errorCheck'),
             'fontSize': game.settings.get('aevtt', 'fontSize'),
             // 'theme': game.settings.get('aevtt', 'theme'),
             'lineWrap': game.settings.get('aevtt', 'lineWrap'),

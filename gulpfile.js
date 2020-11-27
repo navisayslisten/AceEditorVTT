@@ -22,14 +22,10 @@ function getManifest() {
     }
 
     const modulePath = path.join(json.root, 'module.json');
-    const systemPath = path.join(json.root, 'system.json');
 
     if (fs.existsSync(modulePath)) {
         json.file = fs.readJSONSync(modulePath);
         json.name = 'module.json';
-    } else if (fs.existsSync(systemPath)) {
-        json.file = fs.readJSONSync(systemPath);
-        json.name = 'system.json';
     } else {
         return;
     }
@@ -90,11 +86,11 @@ function buildWatch() {
 
     gulp.watch('src/**/*.less', {ignoreInitial: false}, buildLess);
     gulp.watch(
-        ['src/fonts', 'src/lang', 'src/templates', 'src/*.json', 'src/assets/**/*'],
+        ['src/*.json'],
         {ignoreInitial: false},
         copyFiles
     );
-    gulp.watch('src/scripts/**/*.js', buildWebpack);
+    gulp.watch('src/scripts/*.js', buildWebpack);
 }
 
 
@@ -126,12 +122,12 @@ async function clean() {
     const files = [];
 
     // If the project uses TypeScript
-    if (fs.existsSync(path.join('src', `${name}.ts`))) {
+    /*if (fs.existsSync(path.join('src', `${name}.ts`))) {
         files.push(
             `${name}.js`,
             'module.json',
         );
-    }
+    }*/
 
     // If the project uses Less or SASS
     if (

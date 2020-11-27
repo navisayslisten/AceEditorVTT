@@ -12,7 +12,7 @@
   height: calc(90% - 11rem);
   margin: 5rem;
 }
-.ace-sheet .form-group.stacked.command {
+.macro-sheet .form-group.stacked.command {
   position: relative;
 }
 .ace-editor-expand {
@@ -20,4 +20,11 @@
   flex-shrink: 0 !important;
   flex-basis: 32px !important;
   border-radius: 5px;
+}
+.ace-editor-expand i.fas.fa-expand-alt,
+.ace-editor-expand i.fas.fa-compress-alt {
+  margin: unset;
+}
+.parent-div {
+  transform: none;
 }
