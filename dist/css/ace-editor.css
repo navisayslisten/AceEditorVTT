@@ -7,7 +7,7 @@
   left: 0;
   width: calc(100% - 10rem);
   height: calc(70% - 11rem) !important;
-  margin: 5rem;
+  margin: 4rem;
 }
 .ace_content {
   position: inherit;
