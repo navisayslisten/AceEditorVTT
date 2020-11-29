@@ -65,8 +65,7 @@ Hooks.on('renderMacroConfig', function (aceConfig) {
         enableBasicAutocompletion: autoComplete,
         enableSnippets: autoComplete,
         enableLiveAutocompletion: autoComplete,
-        minLines: 15,
-        maxLines: 50,
+        minLines: 15
     });
     editor.setTheme('ace/theme/solarized_dark');
     editor.getSession().setUseWrapMode(game.settings.get('AceEditorVTT', 'lineWrap'));

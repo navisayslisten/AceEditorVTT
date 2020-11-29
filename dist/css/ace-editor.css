@@ -1,8 +1,5 @@
 .ace-editor-button {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  flex-basis: 32px !important;
-  border-radius: 5px;
+  flex-basis: auto !important;
 }
 .ace-editor {
   position: static;
@@ -17,16 +14,6 @@
 }
 .macro-sheet .form-group.stacked.command {
   position: relative;
-}
-.ace-editor-expand {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  flex-basis: 32px !important;
-  border-radius: 5px;
-}
-.ace-editor-expand i.fas.fa-expand-alt,
-.ace-editor-expand i.fas.fa-compress-alt {
-  margin: unset;
 }
 .parent-div {
   transform: none;
