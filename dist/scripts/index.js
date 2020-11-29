@@ -5882,6 +5882,64 @@ module.exports = __webpack_require__.p + "63b15fb6fc8f897b22a4bf72b7e8452a.js";
 
 /***/ }),
 
+/***/ "./src/scripts/ace-themes.js":
+/*!***********************************!*\
+  !*** ./src/scripts/ace-themes.js ***!
+  \***********************************/
+/*! namespace exports */
+/*! export themes [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.d, __webpack_require__.* */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "themes": () => /* binding */ themes
+/* harmony export */ });
+const themes = {
+    "ambiance": "Ambiance",
+    "chaos": "Chaos",
+    "chrome": "Chrome",
+    "clouds": "Clouds",
+    "clouds_midnight": "Clouds Midnight",
+    "cobalt": "Cobalt",
+    "crimson_editor": "Crimson Editor",
+    "dawn": "Dawn",
+    "dracula": "Dracula",
+    "dreamweaver": "Dreamweaver",
+    "eclipse": "Eclipse",
+    "github": "Github",
+    "gob": "Gob",
+    "gruvbox": "Gruvbox",
+    "idle_fingers": "Idle Fingers",
+    "iplastic": "iPlastic",
+    "katzenmilch": "Katzenmilch",
+    "kr_Theme": "KR Theme",
+    "kuroir": "Kuroir",
+    "merbivor": "Merbivor",
+    "merbivor_soft": "Merbivor Soft",
+    "mono_industrial": "Mono Industrial",
+    "monokai": "Monokai",
+    "nord_dark": "Nord Dark",
+    "pastel_on_dark": "Pastel On Dark",
+    "solarized_dark": "Solarized Dark",
+    "solarized_light": "Solarized Light",
+    "sqlserver": "SQLServer",
+    "terminal": "Terminal",
+    "textmate": "Textmate",
+    "tomorrow": "Tomorrow",
+    "tomorrow_night": "Tomorrow Night",
+    "tomorrow_night_blue": "Tomorrow Night Blue",
+    "tomorrow_night_bright": "Tomorrow Night Bright",
+    "tomorrow_night_eighties": "Tomorrow Night 80s",
+    "twilight": "Twilight",
+    "vibrant_ink": "Vibrant Ink",
+    "xcode": "Xcode"
+}
+
+/***/ }),
+
 /***/ "./src/scripts/index.js":
 /*!******************************!*\
   !*** ./src/scripts/index.js ***!
@@ -5893,9 +5951,8 @@ module.exports = __webpack_require__.p + "63b15fb6fc8f897b22a4bf72b7e8452a.js";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./settings */ "./src/scripts/settings.js");
+/* harmony import */ var _ace_themes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ace-themes */ "./src/scripts/ace-themes.js");
 
-// import {themes} from "./ace-themes";
 const ace = __webpack_require__(/*! ace-builds/src-min-noconflict/ace */ "./node_modules/ace-builds/src-min-noconflict/ace.js");
 __webpack_require__(/*! ace-builds/webpack-resolver */ "./node_modules/ace-builds/webpack-resolver.js");
 __webpack_require__(/*! ace-builds/src-min-noconflict/ext-language_tools */ "./node_modules/ace-builds/src-min-noconflict/ext-language_tools.js");
@@ -5903,68 +5960,28 @@ __webpack_require__(/*! ace-builds/src-min-noconflict/ext-error_marker */ "./nod
 ace.config.set("basePath", "modules/AceEditorVTT/scripts/");
 const furnaceMessage = 'Ace Editor VTT is not compatible with Furnace. Ace is now disabled, in favor of Furnace.';
 
+let aceConfig;
+let editor;
+let configElement;
 
 Hooks.once('ready', function() {
     furnaceUICheck();
 });
 
-Hooks.once('init', function () {
+Hooks.on('init', function () {
     game.AceEditorVTT= {};
     CONFIG.debug.AceEditorVTT = false;
-    _settings__WEBPACK_IMPORTED_MODULE_0__.AceSettings.init();
+    AceSettings.init();
 });
 
-Hooks.on('renderMacroConfig', function (aceConfig) {
-    const enabled = game.settings.get('AceEditorVTT', 'enabled');
-    const fontSize = game.settings.get('AceEditorVTT', 'fontSize');
-    // const themeName = game.settings.get('AceEditorVTT', 'theme');
-    // let theme = '';
-    const autoComplete = game.settings.get('AceEditorVTT', 'autoComplete');
-    const errorCheck = game.settings.get('AceEditorVTT', 'errorCheck');
-    const configElement = aceConfig.element;
+Hooks.on('closeSettingsConfig', function() {
+    updateEditor();
+});
 
-    // If not enabled, or if Furnace is enabled, bail!
-    if (!enabled) return configElement.find('.ace-editor').css('display', 'none');
-    if (furnaceUICheck()) return;
-
-    configElement
-        .find('div.form-group.stacked.command')
-        .append(
-            `<div class="ace-editor" id="aceEditor-${aceConfig.object.id}"></div>`
-        );
-
-    // TODO: Figure out how to allow selecting themes
-    // if (!themeName instanceof String || !themes.includes(themeName)) {
-    //     console.error(`Theme: '${theme}' does not exist.`);
-    //     return;
-    // } else {
-    //     theme = `ace/themes/${themeName}`;
-    // }
-
-    if (!fontSize instanceof Number || fontSize <= 0) {
-        console.error(`Invalid fontSize: ${fontSize}`);
-        return;
-    }
-
-    configElement.find('.command textarea[name="command"]').css("display", "");
-    configElement
-        .find('.sheet-footer')
-        .append('<button type="button" class="ace-editor-button" title="Toggle Ace Editor" name="editorButton"><i class="fas fa-terminal"></i></button>');
-
-    let editor = ace.edit(`aceEditor-${aceConfig.object.id}`);
-    editor.getSession().setUseWorker(errorCheck);
-    editor.setOptions({
-        mode: 'ace/mode/javascript',
-        fontSize: `${fontSize}pt`,
-        showPrintMargin: false,
-        foldStyle: 'markbegin',
-        enableBasicAutocompletion: autoComplete,
-        enableSnippets: autoComplete,
-        enableLiveAutocompletion: autoComplete,
-        minLines: 15
-    });
-    editor.setTheme('ace/theme/solarized_dark');
-    editor.getSession().setUseWrapMode(game.settings.get('AceEditorVTT', 'lineWrap'));
+Hooks.on('renderMacroConfig', function (config) {
+    aceConfig = config;
+    configElement = config.element;
+    setupAceUI();
 
     configElement.find('.ace-editor-button').on('click', (event) => {
         event.preventDefault();
@@ -5974,10 +5991,13 @@ Hooks.on('renderMacroConfig', function (aceConfig) {
             return;
         }
         if (configElement.find('.ace-editor').css("display") === "none") {
+            updateEditor();
+            configElement.find('.command label').css("display", "none");
             configElement.find('.command textarea[name="command"]').css("display", "none");
             configElement.find('.ace-editor').css("display", "");
             editor.setValue(configElement.find('.command textarea[name="command"]').val(), -1);
         } else {
+            configElement.find('.command label').css("display", "");
             configElement.find('.command textarea[name="command"]').css("display", "");
             configElement.find('.ace-editor').css("display", "none");
         }
@@ -6008,8 +6028,47 @@ Hooks.on('renderMacroConfig', function (aceConfig) {
         editor.renderer.updateFull(true);
     }).observe(editor.container);
 
-    createMacroConfigHook(aceConfig.id, editor);
+    createMacroConfigHook(config.id, editor);
 });
+
+function setupAceUI() {
+    const settings = new AceSettings().getSettingsData();
+
+    // If not enabled, or if Furnace is enabled, bail!
+    if (!settings.enabled) return configElement.find('.ace-editor').css('display', 'none');
+    if (furnaceUICheck()) return;
+
+    configElement
+        .find('div.form-group.stacked.command')
+        .append(
+            `<div class="ace-editor" id="aceEditor-${aceConfig.object.id}"></div>`
+        );
+
+    if (!settings.fontSize instanceof Number || settings.fontSize <= 0) {
+        console.error(`Invalid fontSize: ${settings.fontSize}`);
+        return;
+    }
+
+    configElement.find('.command textarea[name="command"]').css("display", "");
+    configElement
+        .find('.sheet-footer')
+        .append('<button type="button" class="ace-editor-button" title="Toggle Ace Editor" name="editorButton"><i class="fas fa-terminal"></i></button>');
+
+    editor = ace.edit(`aceEditor-${aceConfig.object.id}`);
+    editor.getSession().setUseWorker(settings.errorCheck);
+    editor.setOptions({
+        mode: 'ace/mode/javascript',
+        fontSize: `${settings.fontSize}pt`,
+        showPrintMargin: false,
+        foldStyle: 'markbegin',
+        enableBasicAutocompletion: settings.autoComplete,
+        enableSnippets: settings.autoComplete,
+        enableLiveAutocompletion: settings.autoComplete,
+        minLines: 15,
+        wrap: settings.lineWrap,
+        theme: `ace/theme/${settings.theme}`,
+    });
+}
 
 function createMacroConfigHook(id, editor) {
     Hooks.once('closeMacroConfig', function (aceConfig) {
@@ -6040,24 +6099,59 @@ function disableAce() {
         .then(r => console.debug(`AEVTT now set to ${r}`));
 }
 
-/***/ }),
+function updateEditor() {
+    const enabled = game.settings.get('AceEditorVTT', 'enabled');
+    if (!enabled) {
+        editor.destroy();
+        editor.container.remove();
+        configElement.find('.command textarea[name="command"]').css("display", "");
+        configElement.find('.ace-editor').css("display", "none");
+        configElement.find('.ace-editor-button').css("display", "none");
+        return;
+    } else {
 
-/***/ "./src/scripts/settings.js":
-/*!*********************************!*\
-  !*** ./src/scripts/settings.js ***!
-  \*********************************/
-/*! namespace exports */
-/*! export AceSettings [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_require__.r, __webpack_exports__, __webpack_require__.d, __webpack_require__.* */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    }
+    const settings = new AceSettings().getSettingsData();
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AceSettings": () => /* binding */ AceSettings
-/* harmony export */ });
+    editor.getSession().setUseWorker(settings.errorCheck);
+    editor.setOptions({
+        mode: 'ace/mode/javascript',
+        fontSize: `${settings.fontSize}pt`,
+        showPrintMargin: false,
+        foldStyle: 'markbegin',
+        enableBasicAutocompletion: settings.autoComplete,
+        enableSnippets: settings.autoComplete,
+        enableLiveAutocompletion: settings.autoComplete,
+        minLines: 15,
+        wrap: settings.lineWrap,
+        theme: `ace/theme/${settings.theme}`,
+    });
+    editor.renderer.updateFull(true);
+}
+
 class AceSettings extends FormApplication {
+    constructor(object = {}, options) {
+        super(object, options);
+    }
+
+    static get defaultOptions() {
+        return {
+            ...super.defaultOptions,
+            height: 'auto',
+            title: 'AceEditorVTT',
+            width: 600,
+            classes: ['AceEditorVTT', 'settings'],
+            tabs: [
+                {
+                    navSelector: '.tabs',
+                    contentSelector: 'form',
+                    initial: 'name',
+                },
+            ],
+            submitOnClose: true,
+        };
+    }
+
     static init() {
         game.settings.register('AceEditorVTT', 'enabled', {
             name: 'Enable Ace Editor for macros.',
@@ -6089,27 +6183,6 @@ class AceSettings extends FormApplication {
             default: false,
         });
 
-        game.settings.register('AceEditorVTT', 'fontSize', {
-            name: "Set the Ace Editor font size.",
-            type: Number,
-            scope: 'client',
-            config: true,
-            default: 11,
-        });
-
-        // TODO: Figure out how to make this work & a dropdown
-
-        // game.settings.register('AceEditorVTT', 'theme', {
-        //     name: "Set your Ace Editor color/style theme.",
-        //     type: String,
-        //     hint:
-        //         'Themes can be found at https://github.com/ajaxorg/ace/tree/master/lib/ace/theme. ' +
-        //         'Default is solarized_dark',
-        //     scope: 'client',
-        //     config: true,
-        //     default: "solarized_dark",
-        // });
-
         game.settings.register('AceEditorVTT', 'lineWrap', {
             name: "Enable line wrap",
             type: Boolean,
@@ -6117,30 +6190,26 @@ class AceSettings extends FormApplication {
             config: true,
             default: true,
         });
-    }
 
+        game.settings.register('AceEditorVTT', 'theme', {
+            name: "Set your Ace Editor color/style theme.",
+            type: String,
+            hint:
+                'Themes can be found at https://github.com/ajaxorg/ace/tree/master/lib/ace/theme. ' +
+                'Default is solarized_dark',
+            scope: 'client',
+            config: true,
+            choices: _ace_themes__WEBPACK_IMPORTED_MODULE_0__.themes,
+            default: "solarized_dark",
+        });
 
-
-    static get defaultOptions() {
-        return {
-            ...super.defaultOptions,
-            height: 'auto',
-            title: 'AceEditorVTT',
-            width: 600,
-            classes: ['AceEditorVTT', 'settings'],
-            tabs: [
-                {
-                    navSelector: '.tabs',
-                    contentSelector: 'form',
-                    initial: 'name',
-                },
-            ],
-            submitOnClose: true,
-        };
-    }
-
-    constructor(object = {}, options) {
-        super(object, options);
+        game.settings.register('AceEditorVTT', 'fontSize', {
+            name: "Set the Ace Editor font size.",
+            type: Number,
+            scope: 'client',
+            config: true,
+            default: 11,
+        });
     }
 
     getSettingsData() {
@@ -6148,9 +6217,9 @@ class AceSettings extends FormApplication {
             'enabled': game.settings.get('AceEditorVTT', 'enabled'),
             'autoComplete': game.settings.get('AceEditorVTT', 'autoComplete'),
             'errorCheck': game.settings.get('AceEditorVTT', 'errorCheck'),
-            'fontSize': game.settings.get('AceEditorVTT', 'fontSize'),
-            // 'theme': game.settings.get('AceEditorVTT', 'theme'),
             'lineWrap': game.settings.get('AceEditorVTT', 'lineWrap'),
+            'fontSize': game.settings.get('AceEditorVTT', 'fontSize'),
+            'theme': game.settings.get('AceEditorVTT', 'theme'),
         };
     }
 
@@ -6160,7 +6229,7 @@ class AceSettings extends FormApplication {
         return btns;
     }
 
-    getData(options={}) {
+    getData(options = {}) {
         let data = super.getData();
         data.settings = this.getSettingsData();
         return data;
@@ -6168,6 +6237,7 @@ class AceSettings extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
+        updateEditor();
     }
 
     _updateObject(ev, formData) {
