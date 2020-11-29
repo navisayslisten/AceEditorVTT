@@ -16,9 +16,9 @@ Features included for AceEditorVTT:
 * Error markings.
 * Line wrap.
 * Font size.
+* A selection of common editor themes, like Solarized Dark, Monokai, etc...
 
 ### TODO
-* Select a theme instead of defaulting to `solarized_dark`.
 * More editor options, with some being in the macro-editor instead of Module Settings.
 * Option for the editor to be default (don't have to click editor button).
 * Maybe Furnace compatibility?
