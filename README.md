@@ -1,3 +1,6 @@
+# THIS MODULE IS DEPRECATED! It will soon be delisted from Foundry's package manager. Fork or reuse this code at your discretion.
+# Please use [VTTMacroEditor](https://github.com/ardittristan/VTTMacroEditor) instead. It's what this project was based on anyway.
+
 # AceEditorVTT ![](https://badgen.net/github/last-commit/navisayslisten/AceEditorVTT?color=blue)
 Foundry VTT module that replaces the macro editor with Ajax.org Cloud9 Editor (ACE) for Javascript.
 
